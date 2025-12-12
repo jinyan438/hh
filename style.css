@@ -1,0 +1,223 @@
+:root {
+  --bg: #0b0f1a;
+  --panel: #121827;
+  --accent: #f3c969;
+  --text: #e8ecf1;
+  --muted: #9ca4b5;
+  --tile-size: 48px;
+  --sheet: url('https://raw.githubusercontent.com/ckcz123/mota-js/master/project/images/terrain.png');
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: "Segoe UI", "PingFang SC", sans-serif;
+  background: radial-gradient(circle at 20% 20%, #111a2e, #0b0f1a 55%);
+  color: var(--text);
+}
+
+.page {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+h1 {
+  margin: 0 0 4px;
+  letter-spacing: 2px;
+}
+
+.subtitle {
+  margin: 0;
+  color: var(--muted);
+}
+
+.badges {
+  display: flex;
+  gap: 8px;
+}
+
+.badge {
+  padding: 6px 10px;
+  border: 1px solid #263352;
+  border-radius: 8px;
+  background: rgba(255,255,255,0.04);
+  color: var(--muted);
+}
+
+main {
+  display: grid;
+  grid-template-columns: 1fr 360px;
+  gap: 16px;
+}
+
+.board-panel {
+  background: var(--panel);
+  padding: 14px;
+  border-radius: 12px;
+  box-shadow: 0 16px 32px rgba(0, 0, 0, 0.25);
+}
+
+.board {
+  display: grid;
+  grid-template-columns: repeat(13, var(--tile-size));
+  grid-template-rows: repeat(13, var(--tile-size));
+  gap: 2px;
+  width: calc(13 * var(--tile-size));
+  height: calc(13 * var(--tile-size));
+  margin: 0 auto;
+  background: #05070f;
+  padding: 6px;
+  border-radius: 10px;
+}
+
+.tile {
+  width: var(--tile-size);
+  height: var(--tile-size);
+  image-rendering: pixelated;
+  border-radius: 6px;
+  background-size: 768px 768px;
+  background-repeat: no-repeat;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.04);
+}
+
+.ground { background: #1c263a; }
+.wall { background: #121827; background-image: var(--sheet); background-position: -288px -432px; }
+.hero { background-image: url('https://raw.githubusercontent.com/ckcz123/mota-js/master/project/images/hero.png'); background-position: -96px 0; background-size: 512px 512px; }
+
+.stairs-up { background-image: var(--sheet); background-position: -96px -48px; }
+.stairs-down { background-image: var(--sheet); background-position: -144px -48px; }
+.door-yellow { background-image: var(--sheet); background-position: -192px -96px; }
+.door-blue { background-image: var(--sheet); background-position: -240px -96px; }
+
+.item { background-image: var(--sheet); }
+.potion-red { background-position: -48px 0; }
+.potion-blue { background-position: 0 0; }
+.gem-atk { background-position: -240px 0; }
+.gem-def { background-position: -288px 0; }
+.key-yellow, .icon.key-yellow { background-image: var(--sheet); background-position: -240px -48px; }
+.key-blue, .icon.key-blue { background-image: var(--sheet); background-position: -288px -48px; }
+
+.enemy { background-image: url('https://raw.githubusercontent.com/ckcz123/mota-js/master/project/images/enemy.png'); background-size: 512px 512px; }
+.slm { background-position: 0 -144px; }
+.bat { background-position: -96px -144px; }
+.skeleton { background-position: -192px -144px; }
+.knight { background-position: -288px -144px; }
+
+.side-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.stats, .legend, .log, .controls {
+  background: var(--panel);
+  border-radius: 12px;
+  padding: 12px 14px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+}
+
+.stats h2, .legend h2, .log h2, .controls h2 {
+  margin-top: 0;
+}
+
+.stat-line {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+  color: var(--muted);
+}
+
+.stat-line.keys span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 80px;
+}
+
+.icon {
+  width: 18px;
+  height: 18px;
+  display: inline-block;
+  background-size: 384px 384px;
+  image-rendering: pixelated;
+}
+
+.legend ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px 6px;
+}
+
+.legend li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--muted);
+}
+
+.log {
+  min-height: 160px;
+}
+
+#log-text {
+  max-height: 200px;
+  overflow-y: auto;
+  line-height: 1.5;
+  display: flex;
+  flex-direction: column-reverse;
+  gap: 6px;
+}
+
+.btn-row {
+  display: flex;
+  gap: 10px;
+}
+
+.controls button {
+  background: var(--accent);
+  color: #0b0f17;
+  border: none;
+  padding: 10px 12px;
+  border-radius: 8px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.1s ease, box-shadow 0.2s ease;
+}
+
+.controls button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.3);
+}
+
+.controls button:active {
+  transform: translateY(0);
+}
+
+@media (max-width: 960px) {
+  main {
+    grid-template-columns: 1fr;
+  }
+  .board {
+    --tile-size: 36px;
+    width: calc(13 * var(--tile-size));
+    height: calc(13 * var(--tile-size));
+  }
+}

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>精致魔塔</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="page">
+    <header>
+      <div>
+        <h1>魔塔复刻</h1>
+        <p class="subtitle">方向键移动 · 空格查看战斗预估 · R 重置 · S 静音/开音</p>
+      </div>
+      <div class="badges">
+        <span class="badge">13×13</span>
+        <span class="badge">经典像素</span>
+      </div>
+    </header>
+    <main>
+      <section class="board-panel">
+        <div id="board" class="board" aria-label="魔塔地图" role="grid"></div>
+      </section>
+      <section class="side-panel">
+        <div class="stats" aria-live="polite">
+          <h2>勇者状态</h2>
+          <div class="stat-line"><span>生命</span><span id="hp"></span></div>
+          <div class="stat-line"><span>攻击</span><span id="atk"></span></div>
+          <div class="stat-line"><span>防御</span><span id="def"></span></div>
+          <div class="stat-line"><span>金币</span><span id="gold"></span></div>
+          <div class="stat-line"><span>经验</span><span id="exp"></span></div>
+          <div class="stat-line keys"><span>钥匙</span>
+            <span><span class="icon key-yellow"></span><span id="key-yellow"></span></span>
+            <span><span class="icon key-blue"></span><span id="key-blue"></span></span>
+          </div>
+          <div class="stat-line"><span>楼层</span><span id="floor"></span></div>
+        </div>
+        <div class="legend">
+          <h2>图例</h2>
+          <ul>
+            <li><span class="tile wall"></span>墙壁</li>
+            <li><span class="tile ground"></span>地面</li>
+            <li><span class="tile door-yellow"></span>黄门</li>
+            <li><span class="tile door-blue"></span>蓝门</li>
+            <li><span class="tile stairs-up"></span>上楼</li>
+            <li><span class="tile stairs-down"></span>下楼</li>
+            <li><span class="tile hero"></span>勇者</li>
+            <li><span class="tile enemy slm"></span>怪物</li>
+            <li><span class="tile item potion-red"></span>红药</li>
+            <li><span class="tile item potion-blue"></span>蓝药</li>
+            <li><span class="tile item gem-atk"></span>攻击宝石</li>
+            <li><span class="tile item gem-def"></span>防御宝石</li>
+            <li><span class="tile item key-yellow"></span>黄钥匙</li>
+            <li><span class="tile item key-blue"></span>蓝钥匙</li>
+          </ul>
+        </div>
+        <div class="log" aria-live="polite">
+          <h2>战斗日志</h2>
+          <div id="log-text"></div>
+        </div>
+        <div class="controls">
+          <h2>提示</h2>
+          <p>尽量先捡宝石再打强怪，遇到门别忘了钥匙颜色要对应。</p>
+          <div class="btn-row">
+            <button id="reset">重新开始</button>
+            <button id="mute">静音</button>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+  <script src="game.js"></script>
+</body>
+</html>
