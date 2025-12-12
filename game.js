@@ -24,7 +24,7 @@ const enemies = {
   knight: { name: '初级骑士', hp: 120, atk: 42, def: 20, gold: 14, exp: 10, cls: 'knight' },
 };
 
-const floors = [
+const baseFloors = [
   {
     name: '1F',
     map: [
@@ -142,6 +142,9 @@ const state = {
     keys: { yellow: 1, blue: 0 },
   },
   muted: false,
+  maps: [],
+  items: [],
+  monsters: [],
 };
 
 const boardEl = document.getElementById('board');
@@ -164,8 +167,8 @@ window.addEventListener('keydown', handleKey);
 function resetGame() {
   state.floor = 0;
   state.hero = {
-    x: floors[0].heroStart.x,
-    y: floors[0].heroStart.y,
+    x: baseFloors[0].heroStart.x,
+    y: baseFloors[0].heroStart.y,
     hp: 200,
     atk: 20,
     def: 10,
@@ -173,6 +176,7 @@ function resetGame() {
     exp: 0,
     keys: { yellow: 1, blue: 0 },
   };
+  state.maps = cloneMaps();
   state.items = cloneItems();
   state.monsters = cloneMonsters();
   logEl.innerHTML = '';
@@ -181,18 +185,22 @@ function resetGame() {
 }
 
 function cloneItems() {
-  return floors.map((f) => ({ ...f.items }));
+  return baseFloors.map((f) => ({ ...f.items }));
 }
 
 function cloneMonsters() {
-  return floors.map((f) => ({ ...f.monsters }));
+  return baseFloors.map((f) => ({ ...f.monsters }));
+}
+
+function cloneMaps() {
+  return baseFloors.map((f) => f.map.map((row) => [...row]));
 }
 
 function render() {
   boardEl.innerHTML = '';
   for (let y = 0; y < size; y++) {
     for (let x = 0; x < size; x++) {
-      const tile = floors[state.floor].map[y][x];
+      const tile = state.maps[state.floor][y][x];
       const div = document.createElement('div');
       div.classList.add('tile', tileClassMap[tile] || 'ground');
       const posKey = `${x},${y}`;
@@ -244,7 +252,7 @@ function handleKey(event) {
 function moveHero(dx, dy) {
   const nx = state.hero.x + dx;
   const ny = state.hero.y + dy;
-  const tile = floors[state.floor].map[ny]?.[nx];
+  const tile = state.maps[state.floor][ny]?.[nx];
   if (tile === undefined || tile === Tile.WALL) return;
 
   const posKey = `${nx},${ny}`;
@@ -266,7 +274,7 @@ function moveHero(dx, dy) {
     }
     state.hero.keys.yellow -= 1;
     log('使用一把黄钥匙，门被打开。');
-    floors[state.floor].map[ny][nx] = Tile.GROUND;
+    state.maps[state.floor][ny][nx] = Tile.GROUND;
   }
 
   if (tile === Tile.DOOR_BLUE) {
@@ -276,19 +284,20 @@ function moveHero(dx, dy) {
     }
     state.hero.keys.blue -= 1;
     log('使用一把蓝钥匙，门被打开。');
-    floors[state.floor].map[ny][nx] = Tile.GROUND;
+    state.maps[state.floor][ny][nx] = Tile.GROUND;
   }
 
   if (tile === Tile.STAIRS_UP) {
-    if (state.floor === floors.length - 1) {
+    if (state.floor === baseFloors.length - 1) {
       log('你登上塔顶，经典魔塔完成度 99%！');
       render();
       return;
     }
     state.floor += 1;
-    state.hero.x = floors[state.floor].heroStart.x;
-    state.hero.y = floors[state.floor].heroStart.y;
-    log(`来到了第 ${floors[state.floor].name}。`);
+    const spawn = findLandingSpot(state.floor, Tile.STAIRS_DOWN);
+    state.hero.x = spawn.x;
+    state.hero.y = spawn.y;
+    log(`来到了第 ${baseFloors[state.floor].name}。`);
     render();
     return;
   }
@@ -296,9 +305,10 @@ function moveHero(dx, dy) {
   if (tile === Tile.STAIRS_DOWN) {
     if (state.floor === 0) return;
     state.floor -= 1;
-    state.hero.x = floors[state.floor].heroStart.x;
-    state.hero.y = floors[state.floor].heroStart.y;
-    log(`回到了第 ${floors[state.floor].name}。`);
+    const spawn = findLandingSpot(state.floor, Tile.STAIRS_UP);
+    state.hero.x = spawn.x;
+    state.hero.y = spawn.y;
+    log(`回到了第 ${baseFloors[state.floor].name}。`);
     render();
     return;
   }
@@ -400,12 +410,24 @@ function updateStats() {
   statsEls.exp.textContent = state.hero.exp;
   statsEls.keyY.textContent = state.hero.keys.yellow;
   statsEls.keyB.textContent = state.hero.keys.blue;
-  statsEls.floor.textContent = `${floors[state.floor].name} / ${floors.length}F`;
+  statsEls.floor.textContent = `${baseFloors[state.floor].name} / ${baseFloors.length}F`;
 }
 
 function toggleMute() {
   state.muted = !state.muted;
   document.getElementById('mute').textContent = state.muted ? '开音' : '静音';
+}
+
+function findLandingSpot(floorIdx, tileType) {
+  const map = state.maps[floorIdx];
+  for (let y = 0; y < map.length; y++) {
+    for (let x = 0; x < map[y].length; x++) {
+      if (map[y][x] === tileType) {
+        return { x, y };
+      }
+    }
+  }
+  return { ...baseFloors[floorIdx].heroStart };
 }
 
 resetGame();
